@@ -7,8 +7,8 @@ import SearchBar from '../components/SearchBar'
 class SearchComponent extends Component {
 
     /* Sets the programs array to empty initially */
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.state = {
             programs: [],
         };
@@ -21,16 +21,13 @@ class SearchComponent extends Component {
         fetch('https://my-json-server.typicode.com/MasonTDaniel/capstonedummydata/db')
             /* Response and promises */
             .then(response => {
-                console.log(response);
                 return response.json();
             })
             /* Examine the data and then map it to our initialPrograms array */
             .then(data => {
-                console.log(data)
                 initialPrograms = data.allPrograms.map((program) => {
                     return program
                 });
-                console.log(initialPrograms);
                 /* Set our new state with the programs array filled with the programs from the array found in the data */
                 this.setState({
                     programs: initialPrograms

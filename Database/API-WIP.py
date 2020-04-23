@@ -4,7 +4,9 @@ Routes and views for the flask application.
 
 from databaseORM import Admin,areas,terms,locations,languages,programs,Program,Area,Term,Location,Language,Provider 
 from  databaseConfiguration import app, db
-from flask import render_template,request, jsonify, flask
+from flask import render_template,request, jsonify, Flask
+import flask
+import json
 
 
 
@@ -18,8 +20,8 @@ app.config["DEBUG"] = True
 #browse, and result
 @app.route('/', methods=['GET'])
 def home():
-    programs = Program.return_all_programs()
-    json_list=[i.serialize for i in programs]
+    providers = Provider.return_all_providers()
+    json_list=[i.serialize for i in providers]
     return  jsonify(json_list)
 
 
@@ -31,71 +33,206 @@ def results():
     locationRequest = flask.request.values.get('loc')
     areaRequest = flask.request.values.get('area')
     termRequest = flask.request.values.get('term')
-    providerRequest = flask.request.values.get('prov')
+    #providerRequest = flask.request.values.get('prov')
 
-   
-    filterResults = None
+    #the following handles the presence of multiple values per param by
+    #splitting them into an array. all values are strings
+    langArray = []
+    locArray=[]
+    areaArray=[]
+    termArray=[]
+    if languageRequest is not None:
+        langArray = languageRequest.split(',')
+    if locationRequest is not None:
+        locArray = locationRequest.split(',')
+    if areaRequest is not None:
+        areaArray = areaRequest.split(',')
+    if termRequest is not None:
+        termArray = termRequest.split(',')
+    #provArray = providerRequest.split(',')
+    #http://127.0.0.1:5000/results?loc=Spain,Madrid&lan=Spanish 
+    # /request = approute 
+    #? = query 
+    #loc=Spain,Madrid = the location is sent two or more locatons using ,. These could be grouped using (Spain Madrid)
+    #& is used to add another value 
+
      # here should be the methods to filter
-
+     #the filters should go through each array and use them for the filter inputs 
+     #these should be put in a variable called filterResults
 
 
 
 
     #after results are gathered
-    json_list = [i.serialize for i in filterResults]
-    return jsonify(json_list)
+    #json_list = [i.serialize for i in filterResults]
+    return jsonify(langArray)
 
     return 
 
-
+@app.route('/login',methods=['GET','PUT'])
+def login():
+    #methods might be needed here to log in fully. 
+    return None
 
 #checking verbs of incoming request
 @app.route('/admin', methods=['GET','POST', 'PUT', 'DELETE'])
 def check():
-    if request.method == GET:
-        languageRequest = flask.request.values.get('lan')
-        locationRequest = flask.request.values.get('loc')
-        areaRequest = flask.request.values.get('area')
-        termRequest = flask.request.values.get('term')
-        providerRequest = flask.request.values.get('prov')
+    if request.method == 'GET':
+       results()
 
-    
-        filterResults = None
-     # here should be the methods to filter
-
-
-
-
-
-    #after results are gathered
-        json_list = [i.serialize for i in filterResults]
-        return jsonify(json_list)
-
-    elif request.method == POST:
+    elif request.method == 'POST':
         #use post to update
-        programID = flask.request.values.get('id')
-        updateName = flask.request.values.get('uName')
+        originalName = flask.request.values.get('originalName')
+        updateJson  = flask.request.get_json(force=True)
         # each new update variable will be named and received in a simmilar fasion. It will look messy
+        #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        #AJ, Look into using a json for this. look into the flask request api
+        #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+       
+        #These are all the possible things that can be updated. If null, it wont be changed or removed
+        print(originalName)
+        print(updateJson)
+        print(type(updateJson))
+        updateName= None
+        updateComm= None
+        updateResearch= None
+        updateIntern= None
+        updateCost= None
+        updateStipulations= None
+        updateDesc= None
+        updateUrl= None
+        updateArea= None
+        updateLang= None
+        updateLocCity= None
+        updateLocCountry =None
+        updateTerm= None
+        updateProvider = None
 
-        
+        if 'upname' in updateJson:
+            updateName=updateJson['upname']
+        if 'upcom' in updateJson:
+            updateComm=updateJson['upcom']
+        if 'upre' in updateJson:
+            updateResearch=updateJson['upre']
+        if 'upin' in updateJson:
+            updateIntern=updateJson['upin']
+        if 'upcos' in updateJson:
+            updateCost=updateJson['upcos']
+        if 'upsti' in updateJson:
+            updateStipulations=updateJson['upsti']
+        if 'updesc' in updateJson:
+            updateDesc=updateJson['updesc']
+        if 'upurl' in updateJson:
+            updateUrl=updateJson['upurl']
+        if 'uplang' in updateJson:
+            updateLang=updateJson['uplang']
+        if 'uploccit' in updateJson:
+            updateLocCity=updateJson['uploccit']
+        if 'uploccou' in updateJson:
+            updateLocCountry=updateJson['uploccou']
+        if 'upter' in updateJson:
+            updateTerm=updateJson['upter']
+        if 'uparea' in updateJson:
+            updateArea=updateJson['uparea']
+        if 'upprov' in updateJson:
+            updateProvider=updateJson['upprov']
+        updateAreas = updateArea.split(',')
+        updateTerms =updateTerm.split(',')
+        updateLanguages = updateLang.split(',')
+        updateCities = updateLocCity.splut(',')
+        updateCountries = updateLocCountry.split(',')
+        updateLocations = []
+        for i in range(0,len(updateCities)):
+            updateCountry.append([updateCities[i],updateCountries[i]])
+       
         #find the program
+        programToModify = Program.find_by_name(originalName)
         #modify the selected values with data given
+        #data will be in the variables and should be type cast as needed. 
+
+
+
+
         #update modified date
+
+        return updateProvider
+
         # if the program is successfully modified 
             #return jsonify("success")
         #else, return either a message saying it failed or render the page with an error sent 
 
-    elif request.method == PUT:
+    elif request.method == 'PUT':
+        updateJson  = flask.request.get_json(force=True)
+        # each new update variable will be named and received in a simmilar fasion. It will look messy
+        #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        #AJ, Look into using a json for this. look into the flask request api
+        #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+       
+        #These are all the possible things that can be updated. If null, it wont be changed or removed
+        updateName= None
+        updateComm= None
+        updateResearch= None
+        updateIntern= None
+        updateCost= None
+        updateStipulations= None
+        updateDesc= None
+        updateUrl= None
+        updateArea= None
+        updateLang= None
+        updateLocCity= None
+        updateLocCountry =None
+        updateTerm= None
+        updateProvider = None
 
-        # same as above, only it doesnt need to look up anything, just take in the values and use them to make a program. 
-        #id not required, but the database should be checked to see if a program of the same name exists. 
-        #if it does, do nothing and return an error
-        return None
-    elif request.method == DELETE:
+        if 'upname' in updateJson:
+            updateName=updateJson['upname']
+        if 'upcom' in updateJson:
+            updateComm=updateJson['upcom']
+        if 'upre' in updateJson:
+            updateResearch=updateJson['upre']
+        if 'upin' in updateJson:
+            updateIntern=updateJson['upin']
+        if 'upcos' in updateJson:
+            updateCost=updateJson['upcos']
+        if 'upsti' in updateJson:
+            updateStipulations=updateJson['upsti']
+        if 'updesc' in updateJson:
+            updateDesc=updateJson['updesc']
+        if 'upurl' in updateJson:
+            updateUrl=updateJson['upurl']
+        if 'uplang' in updateJson:
+            updateLang=updateJson['uplang']
+        if 'uploccit' in updateJson:
+            updateLocCity=updateJson['uploccit']
+        if 'uploccou' in updateJson:
+            updateLocCountry=updateJson['uploccou']
+        if 'upter' in updateJson:
+            updateTerm=updateJson['upter']
+        if 'uparea' in updateJson:
+            updateArea=updateJson['uparea']
+        if 'upprov' in updateJson:
+            updateProvider=updateJson['upprov']
+        updateAreas = updateArea.split(',')
+        updateTerms =updateTerm.split(',')
+        updateLanguages = updateLang.split(',')
+        updateCities = updateLocCity.splut(',')
+        updateCountries = updateLocCountry.split(',')
+        updateLocations = []
+        for i in range(0,len(updateCities)):
+            updateCountry.append([updateCities[i],updateCountries[i]])
+        
+        create_new_program(updateProvider, updateName, updateComm, updateResearch, updateIntern, updateCost, updateStipulations, updateDesc, updateUrl, updateAreas, updateTerms, updateLanguages, updateLocations)
+
+        return "Program added"
+    elif request.method == 'DELETE':
 
         #given the id of a program, delete it from database
-        programID= flask.request.values.get('id')
-        return "REQUEST TYPE: DELETE"
+        programName= flask.request.values.get('progname')
+        providerName = flask.request.values.get('provname')
+        #take in the id and use that to delete 
+        Provider.find_by_name(providerName).remove_program(Program.find_by_name(programName))
+        db.session.commit()
+        return "Program: " + programName+ " Deleted"
 
 
 # A route to return all of the available entries in our catalog.

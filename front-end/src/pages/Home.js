@@ -1,12 +1,13 @@
-import { useOktaAuth } from '@okta/okta-react';
-import React, { useState, useEffect } from 'react';
-import { Button, Header } from 'semantic-ui-react';
+import React, { Component } from 'react';
 import SearchComponent from '../components/SearchComponent'
 
-const Home = () => {
-
-    return (
-        <SearchComponent />
-    );
-};
+class Home extends Component {
+    render() {
+        return (
+            <div>
+                <SearchComponent />
+            </div>
+        )
+    }
+}
 export default Home;

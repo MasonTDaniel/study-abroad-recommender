@@ -117,13 +117,22 @@ class Provider(db.Model):
 	def find_by_name(cls, _name):
 		return cls.query.filter_by(name=_name).first()
 
+	@classmethod
+	def return_all_providers(cls):
+		return cls.query.order_by(cls.name).all()
+
 	@property
 	def serialize(self):
 		return{
 			'id':self.id,
-			'name':self.name
+			'name':self.name,
+			'programs':self.programSerial
 			}
 
+	@property
+	def programSerial(self):
+		return [i.serialize for i in self.program]
+		
 #This class defines the area class. It is to hold all areas of study that can exist 
 #	throught a study abroad program
 #	It has a relationship back to the program class

@@ -13,13 +13,12 @@ const NavBar = () => {
 
     return (
         <div id="nav" className="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 border-bottom shadow-sm">
-            <h5 className="my-0 mr-md-auto font-weight-bold"> <a href="/">Study Abroad</a> </h5>
-            <a className="btn" href="/">BROWSE</a>
-            <a className="btn" href="/how-to">HOW TO</a>
-            <a className="btn" href="/contact-us">CONTACT US</a>
-            <a className="btn" href="/admin-dashboard">ADMIN</a>
+            <a href="/" className="my-0 mr-md-auto align-self-start img-fluid"><img src={window.location.origin + '/img/su-logo.png'} /></a>
+            <a className="btn" href="/">Search</a>
+            <a className="btn" href="https://www.southwestern.edu/study-abroad/contact-us/" target="_blank">Contact Us</a>
+            <a className="btn" href="/admin-dashboard">Admin</a>
             {/* Only display the logout tag in the navbar when an admin user is logged in */}
-            {authState.isAuthenticated && <a className="btn" onClick={logout}>LOG OUT</a>}
+            {authState.isAuthenticated && <button style={{ "cursor": "pointer", "margin-left": "5px", "margin-right": "14px" }} onClick={logout}>Log Out</button>}
         </div>
     );
 }
