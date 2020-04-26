@@ -147,6 +147,9 @@ display: block;
   margin: 50px;
   margin-top: 0px;
 }
+.btn:focus {
+  outline: none;
+}
 
 .result-header {
   margin: 50px;

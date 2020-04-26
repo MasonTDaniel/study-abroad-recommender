@@ -23,6 +23,7 @@ class AdminDashboard extends Component {
                 country: '',
                 term: '',
                 name: '',
+                areaOfStudy: '',
                 language: '',
                 cost: '',
                 website: ''
@@ -32,6 +33,7 @@ class AdminDashboard extends Component {
                 country: '',
                 term: '',
                 name: '',
+                areaOfStudy: '',
                 language: '',
                 cost: '',
                 website: ''
@@ -44,8 +46,16 @@ class AdminDashboard extends Component {
     }
     /* Run after initial render */
     componentDidMount() {
-        this.refreshPrograms();
-
+        /* Fetch the data from the database */
+        axios.get('https://studyabroad-test-server.herokuapp.com/db')
+            /* Store the response (an array of all programs) into programs */
+            .then(response => {
+                this.setState({
+                    programs: response.data.allPrograms
+                });
+            }, (error) => {
+                console.log(error);
+            });
     }
 
     /* Toggles Add a Program window */
@@ -65,7 +75,7 @@ class AdminDashboard extends Component {
     /* Perform a post request to add a new program to the database */
     addProgram() {
         // Access api route and pass along newProgramData, which holds user input from the Add a Program window
-        axios.post('https://my-json-server.typicode.com/MasonTDaniel/capstonedummydata/allPrograms', this.state.newProgramData)
+        axios.post('https://studyabroad-test-server.herokuapp.com/allPrograms', this.state.newProgramData)
             .then(response => {
                 //Add the new program to the existing programs
                 let { programs } = this.state;
@@ -81,6 +91,7 @@ class AdminDashboard extends Component {
                         country: '',
                         term: '',
                         name: '',
+                        areaOfStudy: '',
                         language: '',
                         cost: '',
                         website: ''
@@ -90,9 +101,9 @@ class AdminDashboard extends Component {
     }
 
     /* Open the Edit a Program window with fields prefilled with data corresponding to the program being edited */
-    editProgram(id, country, term, name, language, cost, website) {
+    editProgram(id, country, term, name, areaOfStudy, language, cost, website) {
         this.setState({
-            editProgramData: { id, country, term, name, language, cost, website },
+            editProgramData: { id, country, term, name, areaOfStudy, language, cost, website },
             editProgramModal: !this.state.editProgramModal
         });
     }
@@ -103,10 +114,10 @@ class AdminDashboard extends Component {
     */
     updateProgram() {
         // Extract the users input for updated info
-        let { country, term, name, language, cost, website } = this.state.editProgramData;
+        let { country, term, name, areaOfStudy, language, cost, website } = this.state.editProgramData;
         // Alter the database by passing that info through an http request
-        axios.put('https://my-json-server.typicode.com/MasonTDaniel/capstonedummydata/allPrograms' + '/' + this.state.editProgramData.id, {
-            country, term, name, language, cost, website
+        axios.put('https://studyabroad-test-server.herokuapp.com/allPrograms/' + '/' + this.state.editProgramData.id, {
+            country, term, name, areaOfStudy, language, cost, website
         })
             .then(response => {
                 // Re-call the database to show updated program list in DOM
@@ -118,6 +129,7 @@ class AdminDashboard extends Component {
                         country: '',
                         term: '',
                         name: '',
+                        areaOfStudy: '',
                         language: '',
                         cost: '',
                         website: ''
@@ -129,7 +141,7 @@ class AdminDashboard extends Component {
     // Delete a program from the database, re-call the database to show updated program list
     // Program name
     deleteProgram(id) {
-        axios.delete('https://my-json-server.typicode.com/MasonTDaniel/capstonedummydata/allPrograms' + '/' + id)
+        axios.delete('https://studyabroad-test-server.herokuapp.com/allPrograms' + '/' + id)
             .then(response => {
                 this.refreshPrograms();
             })
@@ -137,11 +149,11 @@ class AdminDashboard extends Component {
 
     refreshPrograms() {
         /* Fetch the data from the database */
-        axios.get('https://my-json-server.typicode.com/MasonTDaniel/capstonedummydata/allPrograms')
+        axios.get('https://studyabroad-test-server.herokuapp.com/db')
             /* Store the response (an array of all programs) into programs */
             .then(response => {
                 this.setState({
-                    programs: response.data
+                    programs: response.data.allPrograms
                 });
             }, (error) => {
                 console.log(error);
@@ -150,12 +162,25 @@ class AdminDashboard extends Component {
 
     isDisabled = () => {
         let empty = '';
-        console.log("disabled before: " + this.state.isDisabled)
-        if (!this.state.newProgramData.country === empty && !this.state.newProgramData.term === empty
-            && !this.state.newProgramData.name === empty && !this.state.newProgramData.language === empty
-            && !this.state.newProgramData.cost === empty && !this.state.newProgramData.website === empty) {
+        console.log("Filled yet? ****************")
+        console.log("country: " + this.state.newProgramData.country + ", empty: " + empty)
+        console.log("countryFilled: " + !(this.state.newProgramData.country == empty))
+        console.log("termFilled: " + !(this.state.newProgramData.term == empty))
+        console.log("nameFilled: " + !(this.state.newProgramData.name == empty))
+        console.log("areaFilled: " + !(this.state.newProgramData.areaOfStudy == empty))
+        console.log("langFilled: " + !(this.state.newProgramData.language == empty))
+        console.log("costFilled: " + !(this.state.newProgramData.cost == empty))
+        console.log("webFilled: " + !(this.state.newProgramData.wesbite == empty))
+        if (!this.state.newProgramData.country == empty && !this.state.newProgramData.term == empty
+            && !this.state.newProgramData.name == empty && !this.state.newProgramData.areaOfStudy == empty
+            && !this.state.newProgramData.language == empty && !this.state.newProgramData.cost == empty
+            && !this.state.newProgramData.website == empty) {
             this.setState({
                 isDisabled: false
+            })
+        } else {
+            this.setState({
+                isDisabled: true
             })
         }
     }
@@ -169,13 +194,14 @@ class AdminDashboard extends Component {
                     <td>{program.country}</td>
                     <td>{program.term}</td>
                     <td>{program.name}</td>
+                    <td>{program.areaOfStudy}</td>
                     <td>{program.language}</td>
                     <td>{program.cost}</td>
-                    <td>{program.website}</td>
+                    <td><a href={program.website} target="_blank" rel="noopener noreferrer">{program.website}</a></td>
                     <td style={{ "width": "10rem" }}>
                         <Button style={{ "width": "3.75rem", "marginRight": "0.2rem", "marginLeft": "0.2rem" }}
                             color="success" size="sm"
-                            onClick={this.editProgram.bind(this, program.id, program.country, program.term, program.name, program.language, program.cost, program.website)}>Edit</Button>
+                            onClick={this.editProgram.bind(this, program.id, program.country, program.term, program.name, program.areaOfStudy, program.language, program.cost, program.website)}>Edit</Button>
 
                         <Button
                             style={{ "width": "3.75rem", "marginRight": "0.2rem", "marginLeft": "0.2rem" }}
@@ -209,7 +235,7 @@ class AdminDashboard extends Component {
                                 let { newProgramData } = this.state;
                                 newProgramData.term = e.target.value;
                                 this.setState({ newProgramData });
-
+                                this.isDisabled();
                             }} />
                         </FormGroup>
                         <FormGroup>
@@ -217,6 +243,15 @@ class AdminDashboard extends Component {
                             <Input id="name" placeholder='e.g. "Universidad de Vigo"' value={this.state.newProgramData.name} onChange={(e) => {
                                 let { newProgramData } = this.state;
                                 newProgramData.name = e.target.value;
+                                this.setState({ newProgramData });
+                                this.isDisabled();
+                            }} />
+                        </FormGroup>
+                        <FormGroup>
+                            <Label for="AreaOfStudy">Area of Study</Label>
+                            <Input id="areaOfStudy" placeholder='e.g. "Intercultural Studies"' value={this.state.newProgramData.areaOfStudy} onChange={(e) => {
+                                let { newProgramData } = this.state;
+                                newProgramData.areaOfStudy = e.target.value;
                                 this.setState({ newProgramData });
                                 this.isDisabled();
                             }} />
@@ -283,6 +318,14 @@ class AdminDashboard extends Component {
                             }} />
                         </FormGroup>
                         <FormGroup>
+                            <Label for="AreaOfStudy">Area of Study</Label>
+                            <Input id="areaOfStudy" placeholder='e.g. "Intercultural Studies"' value={this.state.editProgramData.areaOfStudy} onChange={(e) => {
+                                let { editProgramData } = this.state;
+                                editProgramData.areaOfStudy = e.target.value;
+                                this.setState({ editProgramData });
+                            }} />
+                        </FormGroup>
+                        <FormGroup>
                             <Label for="Language">Language</Label>
                             <Input id="language" placeholder='e.g. "English"' value={this.state.editProgramData.language} onChange={(e) => {
                                 let { editProgramData } = this.state;
@@ -320,6 +363,7 @@ class AdminDashboard extends Component {
                             <th>Country</th>
                             <th>Term</th>
                             <th>Name</th>
+                            <th>Area Of Study</th>
                             <th>Language</th>
                             <th>Cost</th>
                             <th>Website</th>
