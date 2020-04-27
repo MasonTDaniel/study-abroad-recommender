@@ -29,11 +29,6 @@ class SearchBar extends Component {
 
     /* Perform a get request with filters */
     onSearch = (displayRes) => {
-        // const options = {
-        //      if = any, pass 'None', otherwise the filter
-        //     'loc': this.state.filters.countryFilter
-        // }
-        // figure out axios
         let filteredPrograms = [];
         axios.get(`https://studyabroad-test-server.herokuapp.com/allPrograms`)
             .then(response => {
@@ -55,8 +50,6 @@ class SearchBar extends Component {
     filterPrograms = (programs) => {
         let filteredPrograms = [];
         let noFilter = 'Any';
-        console.log("programs (to be filtered): " + programs)
-        console.log("(programs[0].country: " + programs[0].country + ") === (this.state.filters.countryFilter: " + this.state.filters.countryFilter + ") == " + (programs[0].country === this.state.filters.countryFilter || this.state.filters.countryFilter === noFilter))
         for (var i = 0; i < programs.length; i++) {
             if ((programs[i].term === this.state.filters.termFilter || this.state.filters.termFilter === noFilter)
                 && (programs[i].country === this.state.filters.countryFilter || this.state.filters.countryFilter === noFilter)
@@ -193,9 +186,9 @@ class SearchBar extends Component {
                         </FormGroup>
                     </div >
 
-                    <Button className="btn" style={{ "background": "#FFCD00", "border": "none", "color": "#000000", "marginLeft": "7px" }} onClick={this.onSearch.bind(this, true)}>Search
+                    <Button className="btn" style={{ "background": "#FFCD00", "border": "none", "color": "#000000", "marginLeft": "0.5rem" }} onClick={this.onSearch.bind(this, true)}>Search
                     </Button>
-                    <Button className="btn-danger" onClick={this.resetSearch} >Reset</Button>
+                    <Button style={{ "background": "#FFCD00", "border": "none", "color": "#000000", "marginLeft": "0.5rem" }} className="btn-danger" onClick={this.resetSearch} >Reset Search</Button>
                 </div>
                 <div>
                     {this.state.displayResults && <SearchResults state={this.state} />}

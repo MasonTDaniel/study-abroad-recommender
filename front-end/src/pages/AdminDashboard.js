@@ -162,15 +162,6 @@ class AdminDashboard extends Component {
 
     isDisabled = () => {
         let empty = '';
-        console.log("Filled yet? ****************")
-        console.log("country: " + this.state.newProgramData.country + ", empty: " + empty)
-        console.log("countryFilled: " + !(this.state.newProgramData.country == empty))
-        console.log("termFilled: " + !(this.state.newProgramData.term == empty))
-        console.log("nameFilled: " + !(this.state.newProgramData.name == empty))
-        console.log("areaFilled: " + !(this.state.newProgramData.areaOfStudy == empty))
-        console.log("langFilled: " + !(this.state.newProgramData.language == empty))
-        console.log("costFilled: " + !(this.state.newProgramData.cost == empty))
-        console.log("webFilled: " + !(this.state.newProgramData.wesbite == empty))
         if (!this.state.newProgramData.country == empty && !this.state.newProgramData.term == empty
             && !this.state.newProgramData.name == empty && !this.state.newProgramData.areaOfStudy == empty
             && !this.state.newProgramData.language == empty && !this.state.newProgramData.cost == empty
@@ -197,7 +188,7 @@ class AdminDashboard extends Component {
                     <td>{program.areaOfStudy}</td>
                     <td>{program.language}</td>
                     <td>{program.cost}</td>
-                    <td><a href={program.website} target="_blank" rel="noopener noreferrer">{program.website}</a></td>
+                    <td><a href={"https://" + program.website} target="_blank" rel="noopener noreferrer">{program.website}</a></td>
                     <td style={{ "width": "10rem" }}>
                         <Button style={{ "width": "3.75rem", "marginRight": "0.2rem", "marginLeft": "0.2rem" }}
                             color="success" size="sm"
@@ -214,8 +205,7 @@ class AdminDashboard extends Component {
         });
         return (
             <div>
-
-                <Button color="primary" onClick={this.toggleNewProgramModal.bind(this)}>Add Program</Button>
+                <Button style={{ "marginBottom": "0.5rem" }} color="primary" onClick={this.toggleNewProgramModal.bind(this)}>Add Program</Button>
                 <Modal isOpen={this.state.newProgramModal} toggle={this.toggleNewProgramModal.bind(this)}>
                     <ModalHeader toggle={this.toggleNewProgramModal.bind(this)}>Add a new program</ModalHeader>
                     <ModalBody>
