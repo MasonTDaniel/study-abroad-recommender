@@ -1,12 +1,12 @@
 # StudyAbroadCapstone
 A web application built using React and Flask. This project is planned to be used by Southwestern University's Office of Intercultural Learning to help students find study abroad programs that suit their needs.
 
-#Documentation
+# Documentation
 
-##Users
+## Users
 See user_manuel.pdf, written by Ryan Wheeler & the team
 
-##Developers
+## Developers
 See developer_manuel.pdf, written by the team
 
 # front-end
