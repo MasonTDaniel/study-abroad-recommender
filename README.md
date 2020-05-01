@@ -4,10 +4,10 @@ A web application built using React and Flask. This project is planned to be use
 #Documentation
 
 ##Users
-See User Manuel.pdf, written by Ryan Wheeler & the team
+See user_manuel.pdf, written by Ryan Wheeler & the team
 
 ##Developers
-See Developer Manuel.pdf, written by the team
+See developer_manuel.pdf, written by the team
 
 # front-end
 This folder holds the code used for studyabroad-demo
