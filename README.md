@@ -10,7 +10,7 @@ See user_manual.pdf
 See developer_manual.pdf
 
 # front-end
-This folder holds demo code
+This folder holds the demo code
 
 # Team
 Mason Daniel,
